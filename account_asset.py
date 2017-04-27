@@ -495,7 +495,7 @@ maximum number of anticipated depreciation for asset %s' % (asset.name)))
             'early_ammortization': early_ammortization,
             'deductibility': category_obj.deductibility,
             }
-        return
+        return res
 
     def onchange_purchase_salvage_value(self, cr, uid, ids,
                                         purchase_value, salvage_value,
