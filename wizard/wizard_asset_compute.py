@@ -48,4 +48,4 @@ depreciation on the number of days from the beginning of year"),
         return super(asset_depreciation_confirmation_wizard,self).asset_compute(
             cr, uid, ids, context=context)
 
-()
+
