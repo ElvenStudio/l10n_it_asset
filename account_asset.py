@@ -371,7 +371,8 @@ please delete those before' ))
                                 _('Error!'),
                                 _('Reload for fiscal year %s \
 and asset %s is not possible' % (asset.last_use_year.name, asset.name)))
-                        if year_before_id == fiscal_year.id:
+                        # import pdb;pdb.set_trace()
+                        if year_before_id == asset.first_use_year.id:
                             # l anno precedente e' il primo quindi forzo
                             # l ammortamento a ordinario
                             self.write(cr,uid, [asset.id],{'type_amortization': 'O'})
