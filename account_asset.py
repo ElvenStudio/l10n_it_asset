@@ -279,166 +279,174 @@ please delete those before' ))
         for asset in self.browse(cr, uid, ids):
             # verify that non exist amortization for the year
             if not asset.sale_date and asset.remaining_value > 0:
-                line = {}
-                sids = line_asset.search(
-                    cr, uid,
-                    [('fiscal_year', '=', fiscal_year.id),
-                     ('asset_id', '=', asset.id)])
-                if sids:
-                    asset_line_year = line_asset.browse(cr, uid, sids[0])
-                else:
-                    asset_line_year = False
+                if fiscal_year.date_stop >= asset.first_use_year.date_start:
+                    # genero un ammortamento solo se l'anno da calcolare e'
+                    # dopo la data di attivazione del cespite.
+                    line = {}
+                    sids = line_asset.search(
+                        cr, uid,
+                        [('fiscal_year', '=', fiscal_year.id),
+                         ('asset_id', '=', asset.id)])
+                    if sids:
+                        asset_line_year = line_asset.browse(cr, uid, sids[0])
+                    else:
+                        asset_line_year = False
 
-                # cerca l anno precedente per avere i dati di partenza.
-                # per il caricamento di esercizi precedenti
-                # ad odoo l'informazione
-                # deve essere aggiornata alla save/create
-                # della linea di ammortamento
-                sids = line_asset.search(
-                    cr, uid,
-                    [('fiscal_year', '=', year_before_id),
-                     ('asset_id', '=', asset.id)])
-                if sids:
-                    before_year_line = line_asset.browse(cr, uid, sids[0])
-                else:
-                    # non ho trovato l' ammortamento per il periodo precedente
-                    # prima di dare errore deve verificare se è il primo anno
-                    # o se non sta ricalcolando il periodo
-                    # corrente che corrisponde
-                    # al primo anno
-                    # negli altri casi deve sempre esistere il periodo
-                    # precedente a quello che si vuole calcolare.
-                    if not (asset.first_use_year
-                            and fiscal_year.id == asset.first_use_year.id):
-                        raise osv.except_osv(
-                            _('Errore'),
-                            _('Previous amortization not found' + asset.name))
+                    # cerca l anno precedente per avere i dati di partenza.
+                    # per il caricamento di esercizi precedenti
+                    # ad odoo l'informazione
+                    # deve essere aggiornata alla save/create
+                    # della linea di ammortamento
+                    sids = line_asset.search(
+                        cr, uid,
+                        [('fiscal_year', '=', year_before_id),
+                         ('asset_id', '=', asset.id)])
+                    if sids:
+                        before_year_line = line_asset.browse(cr, uid, sids[0])
                     else:
-                        # é il primo esercizio
-                        before_year_line = False
-                # è obbligatorio che sia inserito l' anno di primo esercizio
-                if not asset.first_use_year:
-                    raise osv.except_osv(
-                        _('Error!'),
-                        _('Set the fiscalyear for asset %s' % (asset.name)))
-                if fiscal_year.id == asset.first_use_year.id:
-                    # deve calcolare il primo anno
-                    remaining_value = (
-                        asset.value_residual -
-                        (asset.ordinary_amortization *
-                         asset.category_id.reduction_first_year / 100) *
-                        asset.value_residual/100)
-                    amount = (asset.ordinary_amortization *
-                         asset.category_id.reduction_first_year /
-                         100) * asset.value_residual/100
-                    perc_ammortization = (
-                        asset.ordinary_amortization *
-                        asset.category_id.reduction_first_year / 100)
-                    line = {
-                        'asset_id': asset.id,
-                        'name': fiscal_year.code,
-                        'sequence': 1,
-                        'fiscal_year': fiscal_year.id,
-                        'depreciation_date': date,
-                        'type_amortization': 'F',
-                        'perc_ammortization': perc_ammortization,
-                        'depreciated_value': 0.0,
-                        'amount': amount,
-                        'remaining_value': remaining_value
-                        }
-                    line_asset.create(cr, uid, line)
-                    if not asset.first_use_year:
-                        asset_obj.write(
-                            cr, uid, [asset.id],
-                            {'next_use_year': year_after_id,
-                             'last_use_year': fiscal_year.id,
-                             'first_use_year': fiscal_year.id}, context)
-                    else:
-                        asset_obj.write(
-                            cr, uid, [asset.id],
-                            {'next_use_year': year_after_id,
-                             'last_use_year': fiscal_year.id}, context)
-                else:
-                    # si tratta di un anno diverso dal primo
-                    # se sto calcolando l' anno nuovo posso prendere i dati
-                    # del tipo di ammortamento dal cespite
-                    # ma se devo ricalcolare un anno diverso
-                    # non lo faccio e chiedo all' utente
-                    # di cancellare le righe di ammortamento del cespite
-                    if before_year_line:
-                        if asset.next_use_year.id != fiscal_year.id:
-                            raise osv.except_osv(
-                                _('Error!'),
-                                _('Reload for fiscal year %s \
-and asset %s is not possible' % (asset.last_use_year.name, asset.name)))
-                        # exxitimport pdb;pdb.set_trace()
-                        if year_before_id == asset.first_use_year.id \
-                                and asset.type_amortization == 'F':
-                            # l anno precedente e' il primo quindi forzo
-                            # l ammortamento a ordinario
-                            self.write(cr,uid, [asset.id],{'type_amortization': 'O'})
-                            asset = self.browse(cr, uid, asset.id)
-                        if asset.type_amortization == 'O':
-                            perc = asset.ordinary_amortization
-                        if asset.type_amortization == 'R':
-                            perc = asset.amortization_reduced
-                        if asset.type_amortization == 'A':
-                            anticipato_ids = line_asset.search(
-                                cr, uid,
-                                [('type_amortization', '=', 'A'),
-                                 'asset_id', '=', asset.id])
-                            nmax = asset.category_id.nmax_advanced_amortize
-                            if anticipato_ids \
-                                    and len(anticipato_ids) >= nmax:
+                        # non ho trovato l' ammortamento per il periodo precedente
+                        # prima di dare errore deve verificare se è il primo anno
+                        # o se non sta ricalcolando il periodo
+                        # corrente che corrisponde
+                        # al primo anno
+                        # negli altri casi deve sempre esistere il periodo
+                        # precedente a quello che si vuole calcolare.
+                        if not (asset.first_use_year
+                                and fiscal_year.id == asset.first_use_year.id):
+                            if year_after_id.id == asset.first_use_year.id:
+                                pass
+                                # si tratta della possibilita' che il primo anno
+                                # di ammortamento sia spostato all anno successivo
+                            else:
                                 raise osv.except_osv(
-                                    _('Error!'),
-                                    _('Exceeded the number of \
-maximum number of anticipated depreciation for asset %s' % (asset.name)))
-                            perc = asset.early_ammortization
-                        if asset.type_amortization == 'P':
-                            perc = asset.personal_ammortization
-                        seq = len(asset.depreciation_line_ids) + 1
-                        depreciated_value = asset.accumulated_depreciation
+                                    _('Errore'),
+                                    _('Previous amortization not found ' + asset.name))
+                        else:
+                            # é il primo esercizio
+                            before_year_line = False
+                    # è obbligatorio che sia inserito l' anno di primo esercizio
+                    if not asset.first_use_year:
+                        raise osv.except_osv(
+                            _('Error!'),
+                            _('Set the fiscalyear for asset %s' % (asset.name)))
+                    if fiscal_year.id == asset.first_use_year.id:
+                        # deve calcolare il primo anno
+                        remaining_value = (
+                            asset.value_residual -
+                            (asset.ordinary_amortization *
+                             asset.category_id.reduction_first_year / 100) *
+                            asset.value_residual/100)
+                        amount = (asset.ordinary_amortization *
+                             asset.category_id.reduction_first_year /
+                             100) * asset.value_residual/100
+                        perc_ammortization = (
+                            asset.ordinary_amortization *
+                            asset.category_id.reduction_first_year / 100)
                         line = {
                             'asset_id': asset.id,
-                            'sequence': seq,
                             'name': fiscal_year.code,
+                            'sequence': 1,
                             'fiscal_year': fiscal_year.id,
                             'depreciation_date': date,
-                            'type_amortization': asset.type_amortization,
-                            'perc_ammortization': perc,
-                            'depreciated_value': depreciated_value,
+                            'type_amortization': 'F',
+                            'perc_ammortization': perc_ammortization,
+                            'depreciated_value': 0.0,
+                            'amount': amount,
+                            'remaining_value': remaining_value
                             }
-                        line['amount'] = perc * asset.value_residual / 100
-                        if line['amount'] >= asset.remaining_value:
-                            line['amount'] = asset.remaining_value
-                            line['remaining_value'] = 0.0
+                        line_asset.create(cr, uid, line)
+                        if not asset.first_use_year:
+                            asset_obj.write(
+                                cr, uid, [asset.id],
+                                {'next_use_year': year_after_id,
+                                 'last_use_year': fiscal_year.id,
+                                 'first_use_year': fiscal_year.id}, context)
                         else:
-                            line['remaining_value'] = (
-                                asset.value_residual-line['amount'])
-                    if line:
-                        if asset_line_year:
-                            # esiste già il verifico
-                            # se deve riscrivere o meno
-                            if flag_overw:
-                                line_asset.write(
-                                    cr, uid, [asset_line_year.id], line)
-                                asset_obj.write(
-                                    cr, uid, [asset.id],
-                                    {'next_use_year': year_after_id,
-                                     'last_use_year': fiscal_year.id},
-                                    context)
-                        else:
-                            line_asset.create(cr, uid, line, context)
                             asset_obj.write(
                                 cr, uid, [asset.id],
                                 {'next_use_year': year_after_id,
                                  'last_use_year': fiscal_year.id}, context)
                     else:
-                        raise osv.except_osv(
-                            _('Error!'),
-                            _('Not find the previous exercise for %s' % (
-                              asset.name)))
+                        # si tratta di un anno diverso dal primo
+                        # se sto calcolando l' anno nuovo posso prendere i dati
+                        # del tipo di ammortamento dal cespite
+                        # ma se devo ricalcolare un anno diverso
+                        # non lo faccio e chiedo all' utente
+                        # di cancellare le righe di ammortamento del cespite
+                        if before_year_line:
+                            if asset.next_use_year.id != fiscal_year.id:
+                                raise osv.except_osv(
+                                    _('Error!'),
+                                    _('Reload for fiscal year %s \
+    and asset %s is not possible' % (asset.last_use_year.name, asset.name)))
+                            # exxitimport pdb;pdb.set_trace()
+                            if year_before_id == asset.first_use_year.id \
+                                    and asset.type_amortization == 'F':
+                                # l anno precedente e' il primo quindi forzo
+                                # l ammortamento a ordinario
+                                self.write(cr,uid, [asset.id],{'type_amortization': 'O'})
+                                asset = self.browse(cr, uid, asset.id)
+                            if asset.type_amortization == 'O':
+                                perc = asset.ordinary_amortization
+                            if asset.type_amortization == 'R':
+                                perc = asset.amortization_reduced
+                            if asset.type_amortization == 'A':
+                                anticipato_ids = line_asset.search(
+                                    cr, uid,
+                                    [('type_amortization', '=', 'A'),
+                                     'asset_id', '=', asset.id])
+                                nmax = asset.category_id.nmax_advanced_amortize
+                                if anticipato_ids \
+                                        and len(anticipato_ids) >= nmax:
+                                    raise osv.except_osv(
+                                        _('Error!'),
+                                        _('Exceeded the number of \
+    maximum number of anticipated depreciation for asset %s' % (asset.name)))
+                                perc = asset.early_ammortization
+                            if asset.type_amortization == 'P':
+                                perc = asset.personal_ammortization
+                            seq = len(asset.depreciation_line_ids) + 1
+                            depreciated_value = asset.accumulated_depreciation
+                            line = {
+                                'asset_id': asset.id,
+                                'sequence': seq,
+                                'name': fiscal_year.code,
+                                'fiscal_year': fiscal_year.id,
+                                'depreciation_date': date,
+                                'type_amortization': asset.type_amortization,
+                                'perc_ammortization': perc,
+                                'depreciated_value': depreciated_value,
+                                }
+                            line['amount'] = perc * asset.value_residual / 100
+                            if line['amount'] >= asset.remaining_value:
+                                line['amount'] = asset.remaining_value
+                                line['remaining_value'] = 0.0
+                            else:
+                                line['remaining_value'] = (
+                                    asset.value_residual-line['amount'])
+                        if line:
+                            if asset_line_year:
+                                # esiste già il verifico
+                                # se deve riscrivere o meno
+                                if flag_overw:
+                                    line_asset.write(
+                                        cr, uid, [asset_line_year.id], line)
+                                    asset_obj.write(
+                                        cr, uid, [asset.id],
+                                        {'next_use_year': year_after_id,
+                                         'last_use_year': fiscal_year.id},
+                                        context)
+                            else:
+                                line_asset.create(cr, uid, line, context)
+                                asset_obj.write(
+                                    cr, uid, [asset.id],
+                                    {'next_use_year': year_after_id,
+                                     'last_use_year': fiscal_year.id}, context)
+                        else:
+                            raise osv.except_osv(
+                                _('Error!'),
+                                _('Not find the previous exercise for %s' % (
+                                  asset.name)))
         return True
 
     def calc_period_prec(self, cr, uid, fiscal_year, context={}):
