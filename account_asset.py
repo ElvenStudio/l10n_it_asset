@@ -125,8 +125,8 @@ class account_asset_asset(orm.Model):
         'next_use_year': fields.many2one(
             'account.fiscalyear', 'Next Use Year'),
         'type_amortization': fields.selection(
-            (('O', 'ordinary'), ('F', 'firs year reduction'),
-             ('A', 'advance'), ('R', 'reduced'), ('P', 'personal')),
+            (('O', 'Ordinario'), ('F', 'Riduzione Primo Anno'),
+             ('A', 'Anticipato'), ('R', 'Ridotto'), ('P', 'Personalizzato')),
             'Amortization type'),
         'invoice_sale_number': fields.char('Sale Invoice number', size=25),
         'sale_date': fields.date(

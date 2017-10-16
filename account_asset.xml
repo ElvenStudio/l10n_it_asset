@@ -178,11 +178,11 @@
                             <field name="depreciation_line_ids" mode="tree">
 								
                                 <tree string="Depreciation Lines" colors="blue:(move_check == False);black:(move_check == True)">
-									<field name="fiscal_year" />
+									<field name="fiscal_year" string="Anno"/>
                                     <field name="depreciation_date"/>
                                     <field name="sequence" invisible="1"/>
-                                    <field name="type_amortization" />
-                                    <field name="perc_ammortization" />                                    
+                                    <field name="type_amortization" string="Tipo"/>
+                                    <field name="perc_ammortization" string="%" />
                                     <field name="depreciated_value" />                                    
                                     <field name="amount"/>
                                     <field name="remaining_value" string="Residuo da Ammortizzare"/>
@@ -199,10 +199,10 @@
                                         </group>
                                         <group>
                                             <field name="sequence"/>
-                                            <field name="fiscal_year" />
+                                            <field name="fiscal_year"string="Anno"  />
                                             <field name="depreciation_date"/>
-											<field name="type_amortization" />
-											<field name="perc_ammortization" />                                                                               
+											<field name="type_amortization" string="Tipo" />
+											<field name="perc_ammortization" string="%"/>
                                             <field name="depreciated_value"/>
                                             <field name="remaining_value"  string="Residuo da Ammortizzare" />
                                         </group>
