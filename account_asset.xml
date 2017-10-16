@@ -107,48 +107,49 @@
                                 </group>
                                 <group string="Valori">
 									<group>
-									<field name="deductibility" on_change="onchange_deductibility(purchase_value, deductibility,incremental_value,decremental_value)"/>
+									<field name="deductibility" on_change="onchange_deductibility(purchase_value, deductibility,incremental_value,decremental_value)"
+                                    string="Perc.Deducibilità"/>
                                     <field name="salvage_value" string="Importo  indeducibile" widget="monetary" options="{'currency_field': 'currency_id'}" on_change="onchange_purchase_salvage_value(purchase_value, salvage_value,incremental_value,decremental_value,deductibility)"/>
                                      <field name="value_residual" string="Valore da Ammortizzare" widget="monetary" options="{'currency_field': 'currency_id'}"/>                                    
-                                    <field name="accumulated_depreciation" string="Fondo Ammortamento" widget="monetary" options="{'currency_field': 'currency_id'}"/> 
+                                    <field name="accumulated_depreciation" string="Fondo Ammortamento" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                        <field name="last_use_year" string="Ultimo Ammortamento" />
                                     <field name="remaining_value" string="Residuo" widget="monetary" options="{'currency_field': 'currency_id'}"/> 
                                     </group>
                                     <group>
 										<field name="gains" string="Plusvalenze" widget="monetary" options="{'currency_field': 'currency_id'}"/> 
 										<field name="losses" string="Minusvalenze" widget="monetary" options="{'currency_field': 'currency_id'}"/> 
-                                    <field name="incremental_value"  widget="monetary" options="{'currency_field': 'currency_id'}" on_change="onchange_purchase_salvage_value(purchase_value, salvage_value,incremental_value,decremental_value,deductibility)"/>
-                                    <field name="decremental_value"  widget="monetary" options="{'currency_field': 'currency_id'}" on_change="onchange_purchase_salvage_value(purchase_value, salvage_value,incremental_value,decremental_value,deductibility)"/>
+                                    <field name="incremental_value"  string="Incrementi" widget="monetary" options="{'currency_field': 'currency_id'}" on_change="onchange_purchase_salvage_value(purchase_value, salvage_value,incremental_value,decremental_value,deductibility)"/>
+                                    <field name="decremental_value" string="Decrementi" widget="monetary" options="{'currency_field': 'currency_id'}" on_change="onchange_purchase_salvage_value(purchase_value, salvage_value,incremental_value,decremental_value,deductibility)"/>
  
                                     </group>
                                 </group>
                                 
                                 <group string="Vendita">
-									<field name="customer_id"/>
-									<field name="invoice_sale_number"/>
-									<field name="sale_date"/>
-									<field name="sale_value"/>
+									<field name="customer_id" string="Cliente"/>
+									<field name="invoice_sale_number" string="Num.Fattura"/>
+									<field name="sale_date" string="Data Fattura"/>
+									<field name="sale_value" string="Valore Vendita"/>
                                 </group>
 					</xpath>
 					<notebook position="inside">
 						<page string="Percentuali">
 							<group>
-								<field name="ordinary_amortization"/>
-								<field name="amortization_reduced"/>
-								<field name="early_ammortization"/>
-								<field name="personal_ammortization"/>
+								<field name="ordinary_amortization" string="Ammortamento Ordinario"/>
+								<field name="amortization_reduced" string="Ammortamento Ridotto"/>
+								<field name="early_ammortization" string="Ammortamento Anticipato"/>
+								<field name="personal_ammortization" string="Ammortamento Personalizzato"/>
 							</group>
 							<group string="Parametri generazione Ammortamenti" >
-								<field name="next_use_year"/>
-								<field name="type_amortization"/>
-								<field name="last_use_year"/>
+								<field name="next_use_year" string="Ammortamento Prossimo"/>
+								<field name="type_amortization" string="Tipo Ammortamento"/>
 							</group>
 							<group string="Altri">
-								<field name="minor_use"/>
-								<field name="maintenance_accrued"/>
-								<field name="used_asset"/>
-								<field name="date_deactivate_maintenance"/>
-								<field name="first_use_year"/>
-								<field name="deact_use_year"/>
+								<field name="minor_use" string="Minor Uso"/>
+								<field name="maintenance_accrued" string="Ammortamento Manutenzioni"/>
+								<field name="used_asset" string="Bene Usato"/>
+								<field name="date_deactivate_maintenance" string="Data Disattivazione Manutenzioni"/>
+								<field name="first_use_year" string="Anno Primo Ammortamento"/>
+								<field name="deact_use_year" string="Anno disattivazione Bene"/>
 							</group>
 							
 
@@ -158,11 +159,11 @@
 					<field name="history_ids" position="replace">
 						<field name="invoice_line_ids" mode="tree">
                                 <tree string="Invoice Lines" >
-									<field name="type" />
-									<field name="date_invoice" />
-									<field name="supplier_invoice_number" />
-									<field name="partner_id" />
-									<field name="new_asset" />
+									<field name="type"  string="Tipo"/>
+									<field name="date_invoice" string="Data Fattura"/>
+									<field name="supplier_invoice_number" string="Num.Fattura" />
+									<field name="partner_id" string="Fornitore"/>
+									<field name="new_asset" string="Primo Doc." />
 									<field name="name" />
                                     <field name="account_id"/>
                                     <field name="price_subtotal"/>
