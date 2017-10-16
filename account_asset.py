@@ -554,8 +554,8 @@ class account_asset_depreciation_line(orm.Model):
 
     _columns = {
         'type_amortization': fields.selection(
-            (('O', 'ordinary'), ('F', 'firs year reduction'),
-             ('A', 'advance'), ('R', 'reduced'), ('P', 'personal')),
+            (('O', 'Ordinario'), ('F', 'Riduzione Primo Anno'),
+             ('A', 'Anticipato'), ('R', 'Ridotto'), ('P', 'Personalizzato')),
             'Amortization type'),
         'perc_ammortization': fields.float(
             'Percentage amortization',
