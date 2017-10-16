@@ -182,7 +182,7 @@
                                     <field name="depreciation_date"/>
                                     <field name="sequence" invisible="1"/>
                                     <field name="type_amortization" string="Tipo"/>
-                                    <field name="perc_ammortization" string="%" />
+                                    <field name="perc_ammortization" string="Perc." />
                                     <field name="depreciated_value" />                                    
                                     <field name="amount"/>
                                     <field name="remaining_value" string="Residuo da Ammortizzare"/>
@@ -202,7 +202,7 @@
                                             <field name="fiscal_year" string="Anno"  />
                                             <field name="depreciation_date"/>
 											<field name="type_amortization" string="Tipo" />
-											<field name="perc_ammortization" string="%"/>
+											<field name="perc_ammortization" string="Perc."/>
                                             <field name="depreciated_value"/>
                                             <field name="remaining_value"  string="Residuo da Ammortizzare" />
                                         </group>
