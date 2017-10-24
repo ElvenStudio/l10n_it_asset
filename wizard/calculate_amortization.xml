@@ -19,7 +19,7 @@
                 <group>
                     <field name="flag_all"/>
                     <field name="category"/>
-                    <field name="flag_overw"/>
+                    <!--<field name="flag_overw"/>-->
                 </group>
                 <group>
                     <button string="Cancel" special="cancel"
