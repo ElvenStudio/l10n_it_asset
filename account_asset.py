@@ -110,7 +110,7 @@ class account_asset_asset(orm.Model):
                 result[asset.id]['accumulated_depreciation'] += line.amount
             result[asset.id]['remaining_value'] = (
                 asset.value_residual - result[asset.id][
-                    'accumulated_depreciation']) + asset.incremental_value + \
+                    'accumulated_depreciation']) +  \
                      asset.gains-asset.decremental_value-asset.losses-asset.sale_value
         return result
 
