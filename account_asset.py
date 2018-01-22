@@ -741,36 +741,36 @@ relavance of gains or losses"),
                                           line.asset_id.remaining_value) * -1)
                     asset_obj.write(cr, uid, [line.asset_id.id], vals, context)
                     self.check_account_move(cr, uid, line, context)
-                return True
-            if line.asset_category_id:
-                invoice = line.invoice_id
-                vals = {
-                    'name': line.name,
-                    'code': '/',  # line.invoice_id.number or False,
-                    'category_id': line.asset_category_id.id,
-                    'purchase_value': line.price_subtotal,
-                    'period_id': invoice.period_id.id,
-                    'partner_id': invoice.partner_id.id,
-                    'company_id': invoice.company_id.id,
-                    'currency_id': invoice.currency_id.id,
-                    'purchase_date': invoice.date_invoice,
-                    'invoice_purchase_number': invoice.supplier_invoice_number,
-                    'first_use_year': invoice.period_id.fiscalyear_id.id,
-                    'type_amortization': 'O',
-                    }
-                changed_vals = asset_obj.onchange_category_id(
-                    cr, uid, [], vals['category_id'], context)
-                vals.update(changed_vals['value'])
-                changed_vals = asset_obj.onchange_deductibility(
-                    cr, uid, [], line.price_subtotal,
-                    vals['deductibility'], 0.0, 0.0, context)
-                vals.update(changed_vals['value'])
-                asset_id = asset_obj.create(cr, uid, vals, context)
-                self.write(
-                    cr, uid, [line.id],
-                    {'asset_id': asset_id, 'new_asset': True}, context)
-                if line.asset_category_id.open_asset:
-                    asset_obj.validate(cr, uid, [asset_id], context)
+            else:
+                if line.asset_category_id:
+                    invoice = line.invoice_id
+                    vals = {
+                        'name': line.name,
+                        'code': '/',  # line.invoice_id.number or False,
+                        'category_id': line.asset_category_id.id,
+                        'purchase_value': line.price_subtotal,
+                        'period_id': invoice.period_id.id,
+                        'partner_id': invoice.partner_id.id,
+                        'company_id': invoice.company_id.id,
+                        'currency_id': invoice.currency_id.id,
+                        'purchase_date': invoice.date_invoice,
+                        'invoice_purchase_number': invoice.supplier_invoice_number,
+                        'first_use_year': invoice.period_id.fiscalyear_id.id,
+                        'type_amortization': 'O',
+                        }
+                    changed_vals = asset_obj.onchange_category_id(
+                        cr, uid, [], vals['category_id'], context)
+                    vals.update(changed_vals['value'])
+                    changed_vals = asset_obj.onchange_deductibility(
+                        cr, uid, [], line.price_subtotal,
+                        vals['deductibility'], 0.0, 0.0, context)
+                    vals.update(changed_vals['value'])
+                    asset_id = asset_obj.create(cr, uid, vals, context)
+                    self.write(
+                        cr, uid, [line.id],
+                        {'asset_id': asset_id, 'new_asset': True}, context)
+                    if line.asset_category_id.open_asset:
+                        asset_obj.validate(cr, uid, [asset_id], context)
         return True
 
     def check_account_move(self, cr, uid, line, context={}):
