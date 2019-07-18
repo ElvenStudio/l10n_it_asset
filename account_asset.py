@@ -409,22 +409,23 @@ please delete those before' ))
                             seq = len(asset.depreciation_line_ids) + 1
                             depreciated_value = asset.accumulated_depreciation
                             line = {
-                                'asset_id': asset.id,
-                                'sequence': seq,
-                                'name': fiscal_year.code,
-                                'fiscal_year': fiscal_year.id,
-                                'depreciation_date': date,
-                                'type_amortization': asset.type_amortization,
-                                'perc_ammortization': perc,
-                                'depreciated_value': depreciated_value,
-                                }
+                                'asset_id':asset.id,
+                                'sequence':seq,
+                                'name':fiscal_year.code,
+                                'fiscal_year':fiscal_year.id,
+                                'depreciation_date':date,
+                                'type_amortization':asset.type_amortization,
+                                'perc_ammortization':perc,
+                                'depreciated_value':depreciated_value,
+                                'value_residual':asset.value_residual,
+                            }
                             line['amount'] = perc * asset.value_residual / 100
                             if line['amount'] >= asset.remaining_value:
                                 line['amount'] = asset.remaining_value
                                 line['remaining_value'] = 0.0
                             else:
                                 line['remaining_value'] = (
-                                    asset.value_residual-line['amount'])
+                                    asset.value_residual-line['amount'-depreciated_value])
                         if line:
                             if asset_line_year:
                                 # esiste già il verifico
@@ -558,6 +559,7 @@ class account_asset_depreciation_line(orm.Model):
             (('O', 'Ordinario'), ('F', 'Riduzione Primo Anno'),
              ('A', 'Anticipato'), ('R', 'Ridotto'), ('P', 'Personalizzato')),
             'Amortization type'),
+        'value_residual': fields.float('Base di Calcolo'),
         'perc_ammortization': fields.float(
             'Percentage amortization',
             digits_compute=dp.get_precision('Account')),
