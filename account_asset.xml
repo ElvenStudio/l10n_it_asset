@@ -273,6 +273,18 @@
         </record>
 
 
+        <!-- Account Move Line -->
+        <record model="ir.ui.view" id="view_asset_on_move_line form_it">
+            <field name="name">asset_on_move_line form_it</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='line_id']/tree/field[@name='date_maturity']" position="after">
+                    <field name="asset_id" />
+                </xpath>
+            </field>
+        </record>
+
 
 </data>
 </openerp>
