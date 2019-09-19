@@ -354,6 +354,7 @@ please delete those before' ))
                             'depreciated_value': 0.0,
                             'amount': amount,
                             'remaining_value': remaining_value
+                            'value_residual':asset.value_residual,
                             }
                         line_asset.create(cr, uid, line)
                         if not asset.first_use_year:
