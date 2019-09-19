@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Apulia Software S.r.l. (<info@apuliasoftware.it>)
@@ -426,7 +426,7 @@ please delete those before' ))
                                 line['remaining_value'] = 0.0
                             else:
                                 line['remaining_value'] = (
-                                    asset.value_residual-line['amount'-depreciated_value])
+                                    asset.value_residual-line['amount']-depreciated_value)
                         if line:
                             if asset_line_year:
                                 # esiste già il verifico
