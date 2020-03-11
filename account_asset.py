@@ -21,6 +21,7 @@
 
 from openerp.osv import fields, osv, orm
 from datetime import datetime
+from datetime import time
 from dateutil.relativedelta import relativedelta
 import openerp.addons.decimal_precision as dp
 from openerp.tools.translate import _
@@ -353,8 +354,8 @@ please delete those before' ))
                             'perc_ammortization': perc_ammortization,
                             'depreciated_value': 0.0,
                             'amount': amount,
-                            'remaining_value': remaining_value
-                            'value_residual':asset.value_residual,
+                            'remaining_value': remaining_value,
+                            'value_residual': asset.value_residual,
                             }
                         line_asset.create(cr, uid, line)
                         if not asset.first_use_year:
